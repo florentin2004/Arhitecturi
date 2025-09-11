@@ -1,0 +1,35 @@
+```assembly
+; =============================================================================
+;   Functia: aduna_numere_mari
+; =============================================================================
+;   SCOP:
+;       Aduna doua numere mari, stocate in vectori de cifre.
+;   PRERECHIZITE:
+;       - Vectorii 'numar1' si 'numar2' contin cifrele (0-9), aliniate la dreapta.
+;       - Vectorul 'rezultat' este initializat cu 0.
+;   IESIRE (Output):
+;       - Vectorul 'rezultat' va contine suma.
+; =============================================================================
+aduna_numere_mari:
+    mov esi, numar1 + 50
+    mov edi, numar2 + 50
+    mov edx, rezultat + 50
+    
+    mov ecx, 51
+    clc                     ; Curatam Carry Flag (fara transport initial)
+
+.loop_adunare:
+    mov al, [esi]           ; Ia cifra din primul numar
+    adc al, [edi]           ; Aduna cifra din al doilea + Carry Flag (transportul)
+    daa                     ; Ajustare zecimala -> AL e acum o cifra corecta (0-9)
+                            ; si CF e setat corect pentru urmatorul transport.
+    
+    mov [edx], al           ; Salveaza cifra in rezultat
+    
+    dec esi
+    dec edi
+    dec edx
+    dec ecx
+    jnz .loop_adunare
+
+    ret

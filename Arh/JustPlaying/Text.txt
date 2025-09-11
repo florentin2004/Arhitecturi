@@ -1,0 +1,5 @@
+Creați o sursă în limbaj de asamblare x86 care să codifice caracterele duplicate succesive 
+dintr-un șir de intrare. Fișierul de intrare in.txt va conține un șir de maxim 20 de caractere 
+alfanumerice. În fișierul de ieșire vor fi afișate alăturat numărul de apariții succesive și caracterul 
+duplicat identificate în șir. Sirul este format din cel puțin un caracter. Respectați exemplele de mai 
+jos în rezolvarea programului. 
