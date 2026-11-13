@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSec Flashcards // Terminal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d13;
+      --card-bg: #0d1520;
+      --card-back: #0a1826;
+      --primary: #00ff66;
+      --primary-dim: rgba(0, 255, 102, 0.15);
+      --secondary: #00e5ff;
+      --accent: #ff3366;
+      --warning: #ffb000;
+      --text: #c9d1d9;
+      --text-bright: #ffffff;
+      --border: #1f364d;
+      --font: 'Fira Code', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* CRT scanlines effect */
+    body::before {
+      content: " ";
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    header {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--primary);
+    }
+
+    .stats-bar {
+      width: 100%;
+      max-width: 860px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.8rem;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .stat-box .label { font-size: 0.72rem; color: #7f8c9b; text-transform: uppercase; }
+    .stat-box .val { font-size: 1.1rem; font-weight: 700; color: var(--secondary); margin-top: 2px; }
+    .stat-box.box1 .val { color: var(--accent); }
+    .stat-box.box2 .val { color: var(--warning); }
+    .stat-box.box3 .val { color: var(--primary); }
+
+    .controls-top {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+
+    select, button, .file-btn {
+      background: #111a26;
+      color: var(--primary);
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.85rem;
+      font-family: var(--font);
+      font-size: 0.85rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    select:hover, button:hover, .file-btn:hover {
+      border-color: var(--primary);
+      background: var(--primary-dim);
+    }
+    button.active {
+      background: var(--primary);
+      color: #000;
+      font-weight: 700;
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    /* CARD SCENE */
+    .scene {
+      width: 100%;
+      max-width: 860px;
+      height: 380px;
+      perspective: 1200px;
+      margin-bottom: 1.2rem;
+      cursor: pointer;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .card.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-face.front {
+      background: linear-gradient(145deg, #0d1520, #09101a);
+      border-left: 4px solid var(--secondary);
+    }
+
+    .card-face.back {
+      background: linear-gradient(145deg, #0b1a29, #071320);
+      transform: rotateY(180deg);
+      border-left: 4px solid var(--primary);
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: #7f8c9b;
+    }
+
+    .card-tag {
+      background: #142333;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      color: var(--secondary);
+      font-weight: 600;
+    }
+
+    .card-content {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: var(--text-bright);
+      overflow-y: auto;
+      max-height: 250px;
+      padding-right: 0.5rem;
+    }
+
+    .card-content pre, .card-content p {
+      white-space: pre-line;
+    }
+
+    .card-footer {
+      font-size: 0.75rem;
+      color: #5c6c7d;
+      text-align: right;
+    }
+
+    /* ACTION BUTTONS */
+    .controls-nav {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 0.9rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      border-radius: 6px;
+    }
+
+    .btn-red {
+      color: var(--accent);
+      border-color: rgba(255, 51, 102, 0.4);
+    }
+    .btn-red:hover {
+      background: rgba(255, 51, 102, 0.15);
+      border-color: var(--accent);
+    }
+
+    .btn-green {
+      color: var(--primary);
+      border-color: rgba(0, 255, 102, 0.4);
+    }
+    .btn-green:hover {
+      background: rgba(0, 255, 102, 0.15);
+      border-color: var(--primary);
+    }
+
+    .btn-nav {
+      color: var(--secondary);
+      border-color: rgba(0, 229, 255, 0.4);
+    }
+    .btn-nav:hover {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: var(--secondary);
+    }
+
+    .keyboard-hints {
+      margin-top: 1.2rem;
+      font-size: 0.75rem;
+      color: #56697a;
+      text-align: center;
+    }
+    .keyboard-hints kbd {
+      background: #14202d;
+      border: 1px solid var(--border);
+      color: var(--primary);
+      padding: 0.15rem 0.35rem;
+      border-radius: 3px;
+    }
+
+    #loadErrorNotice {
+      display: none;
+      width: 100%;
+      max-width: 860px;
+      background: rgba(255, 176, 0, 0.1);
+      border: 1px solid var(--warning);
+      color: #ffd073;
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <span class="status-badge"></span>
+      <span>SPRC // flashcards</span>
+    </div>
+    <div id="deckCount" style="font-size:0.85rem; color:#7f8c9b;">0 cards</div>
+  </header>
+
+  <div id="loadErrorNotice">
+    ⚠️ <strong>Info CORS / Fișier Local:</strong> Dacă ai deschis <code>index.html</code> direct cu dublu click (protocol <code>file:///</code>), browserul poate bloca <code>fetch("flashcards.json")</code>. Dacă nu se încarcă automat, selectează manual fișierul <code>flashcards.json</code> de mai jos sau rulează un server local (ex: <code>python -m http.server</code>).
+    <div style="margin-top:0.5rem;">
+      <input type="file" id="jsonFileInput" accept=".json" style="color:#7f8c9b; font-size:0.8rem;">
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-box">
+      <div class="label">Total Curs</div>
+      <div class="val" id="statTotal">0</div>
+    </div>
+    <div class="stat-box box1">
+      <div class="label">Nivel 1 (De Repetat)</div>
+      <div class="val" id="statBox1">0</div>
+    </div>
+    <div class="stat-box box2">
+      <div class="label">Nivel 2 (În Progres)</div>
+      <div class="val" id="statBox2">0</div>
+    </div>
+    <div class="stat-box box3">
+      <div class="label">Nivel 3 (Stăpânit)</div>
+      <div class="val" id="statBox3">0</div>
+    </div>
+  </div>
+
+  <div class="controls-top">
+    <div>
+      <select id="courseFilter">
+        <option value="all">Toate Cursurile (1 - 5)</option>
+	<option value="1">Curs 1: Domain Name System (DNS)</option>
+        <option value="2">Curs 2: Web Servers</option>
+        <option value="3">Curs 3: Mail (Protocoale E-mail)</option>
+        <option value="4">Curs 4: Autentificare</option>
+        <option value="5">Curs 5: Network Security – Proxy, Firewall & ACL</option>
+      </select>
+    </div>
+
+    <div class="mode-toggle">
+      <button id="btnLearnMode" class="active">Mod Învățare</button>
+      <button id="btnTestMode">Mod Test (Leitner SRS)</button>
+    </div>
+  </div>
+
+  <div class="scene" id="cardScene">
+    <div class="card" id="cardElement">
+      <div class="card-face front">
+        <div class="card-meta">
+          <span class="card-tag" id="cardTag">CURS</span>
+          <span id="cardIndex">0 / 0</span>
+        </div>
+        <div class="card-content" id="cardQuestion">Se încarcă flashcard-urile...</div>
+        <div class="card-footer">Apasă SPACE sau click pentru a vedea răspunsul ↵</div>
+      </div>
+      <div class="card-face back">
+        <div class="card-meta">
+          <span class="card-tag" style="color:var(--primary); background:#10261b;">RĂSPUNS</span>
+          <span id="cardBoxStatus">Nivel 1</span>
+        </div>
+        <div class="card-content" id="cardAnswer">---</div>
+        <div class="card-footer">Apasă SPACE sau click pentru a întoarce ↵</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls-nav" id="learnControls">
+    <button class="btn-action btn-nav" id="btnPrev">← Înapoi [ ← ]</button>
+    <button class="btn-action btn-nav" id="btnFlip">Întoarce Card [ Space ]</button>
+    <button class="btn-action btn-nav" id="btnNext">Înainte [ → ] →</button>
+  </div>
+
+  <div class="controls-nav" id="testControls" style="display: none;">
+    <button class="btn-action btn-red" id="btnFail">✕ Nu am știut [ ← ]</button>
+    <button class="btn-action btn-nav" id="btnFlipTest">Întoarce Card [ Space ]</button>
+    <button class="btn-action btn-green" id="btnPass">✓ Am știut [ → ]</button>
+  </div>
+
+  <div class="keyboard-hints">
+    Scurtături: <kbd>Space</kbd> Întoarce cardul &nbsp;|&nbsp; <kbd>←</kbd> / <kbd>→</kbd> Navigare sau Nu Am Știut / Am Știut
+  </div>
+
+  <script>
+    let allCards = [];
+    let currentDeck = [];
+    let currentIndex = 0;
+    let isTestMode = false;
+
+    // Leitner Progress din localStorage
+    let userProgress = JSON.parse(localStorage.getItem("si_flashcards_progress") || "{}");
+
+    function saveProgress() {
+      localStorage.setItem("si_flashcards_progress", JSON.stringify(userProgress));
+      updateStats();
+    }
+
+    function initCardProgress(cardId) {
+      if (!userProgress[cardId]) {
+        userProgress[cardId] = { box: 1, lastReviewed: null, timesKnown: 0, timesFailed: 0 };
+      }
+    }
+
+    // Încărcare JSON
+    async function loadData() {
+      try {
+        const response = await fetch("flashcards.json");
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const data = await response.json();
+        processLoadedData(data);
+      } catch (err) {
+        console.warn("Fetch automat eșuat (probabil rulat din file:///):", err);
+        document.getElementById("loadErrorNotice").style.display = "block";
+      }
+    }
+
+    function processLoadedData(data) {
+      allCards = [];
+      data.courses.forEach(c => {
+        c.cards.forEach(card => {
+          allCards.push({
+            id: card.id,
+            courseId: c.id,
+            courseTitle: c.title,
+            q: card.q,
+            a: card.a
+          });
+          initCardProgress(card.id);
+        });
+      });
+      document.getElementById("loadErrorNotice").style.display = "none";
+      applyFilter();
+    }
+
+    // Selectare manuală a fișierului JSON dacă rulează offline direct în browser
+    document.getElementById("jsonFileInput").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const data = JSON.parse(evt.target.result);
+          processLoadedData(data);
+        } catch(err) {
+          alert("Fișierul JSON nu este valid.");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function applyFilter() {
+      const courseFilter = document.getElementById("courseFilter").value;
+      if (courseFilter === "all") {
+        currentDeck = [...allCards];
+      } else {
+        const cId = parseInt(courseFilter);
+        currentDeck = allCards.filter(c => c.courseId === cId);
+      }
+
+      if (isTestMode) {
+        // În test mode sortăm în funcție de nivelul Leitner (cele din Nivel 1 primele)
+        currentDeck.sort((a, b) => {
+          const pA = userProgress[a.id]?.box || 1;
+          const pB = userProgress[b.id]?.box || 1;
+          return pA - pB;
+        });
+      }
+
+      currentIndex = 0;
+      updateStats();
+      renderCard();
+    }
+
+    function updateStats() {
+      let b1 = 0, b2 = 0, b3 = 0;
+      currentDeck.forEach(c => {
+        const p = userProgress[c.id];
+        const box = p ? p.box : 1;
+        if (box === 1) b1++;
+        else if (box === 2) b2++;
+        else if (box === 3) b3++;
+      });
+
+      document.getElementById("statTotal").textContent = currentDeck.length;
+      document.getElementById("statBox1").textContent = b1;
+      document.getElementById("statBox2").textContent = b2;
+      document.getElementById("statBox3").textContent = b3;
+      document.getElementById("deckCount").textContent = `${currentDeck.length} flashcard-uri`;
+    }
+
+    function renderCard() {
+      const cardEl = document.getElementById("cardElement");
+      cardEl.classList.remove("is-flipped");
+
+      if (currentDeck.length === 0) {
+        document.getElementById("cardQuestion").textContent = "Niciun card disponibil.";
+        document.getElementById("cardAnswer").textContent = "---";
+        document.getElementById("cardIndex").textContent = "0 / 0";
+        return;
+      }
+
+      const card = currentDeck[currentIndex];
+      const p = userProgress[card.id] || { box: 1 };
+
+      document.getElementById("cardTag").textContent = `CURS ${card.courseId}`;
+      document.getElementById("cardIndex").textContent = `${currentIndex + 1} / ${currentDeck.length}`;
+      document.getElementById("cardQuestion").textContent = card.q;
+      document.getElementById("cardAnswer").textContent = card.a;
+
+      const dateStr = p.lastReviewed ? new Date(p.lastReviewed).toLocaleDateString("ro-RO") : "Nerevizuit";
+      document.getElementById("cardBoxStatus").textContent = `Nivel ${p.box} • Ultima: ${dateStr}`;
+    }
+
+    function flipCard() {
+      document.getElementById("cardElement").classList.toggle("is-flipped");
+    }
+
+    function prevCard() {
+      if (currentDeck.length === 0) return;
+      currentIndex = (currentIndex - 1 + currentDeck.length) % currentDeck.length;
+      renderCard();
+    }
+
+    function nextCard() {
+      if (currentDeck.length === 0) return;
+      currentIndex = (currentIndex + 1) % currentDeck.length;
+      renderCard();
+    }
+
+    function handleTestResult(passed) {
+      if (currentDeck.length === 0) return;
+      const card = currentDeck[currentIndex];
+      initCardProgress(card.id);
+      const p = userProgress[card.id];
+
+      if (passed) {
+        p.timesKnown++;
+        if (p.box < 3) p.box++;
+      } else {
+        p.timesFailed++;
+        p.box = 1; // revine în prima cutie dacă nu a fost știut
+      }
+      p.lastReviewed = new Date().toISOString();
+      saveProgress();
+
+      // Trece la următorul card
+      nextCard();
+    }
+
+    // Evenimente UI
+    document.getElementById("cardScene").addEventListener("click", flipCard);
+    document.getElementById("btnFlip").addEventListener("click", flipCard);
+    document.getElementById("btnFlipTest").addEventListener("click", flipCard);
+    document.getElementById("btnPrev").addEventListener("click", prevCard);
+    document.getElementById("btnNext").addEventListener("click", nextCard);
+    document.getElementById("btnFail").addEventListener("click", () => handleTestResult(false));
+    document.getElementById("btnPass").addEventListener("click", () => handleTestResult(true));
+
+    document.getElementById("courseFilter").addEventListener("change", applyFilter);
+
+    document.getElementById("btnLearnMode").addEventListener("click", () => {
+      isTestMode = false;
+      document.getElementById("btnLearnMode").classList.add("active");
+      document.getElementById("btnTestMode").classList.remove("active");
+      document.getElementById("learnControls").style.display = "flex";
+      document.getElementById("testControls").style.display = "none";
+      applyFilter();
+    });
+
+    document.getElementById("btnTestMode").addEventListener("click", () => {
+      isTestMode = true;
+      document.getElementById("btnTestMode").classList.add("active");
+      document.getElementById("btnLearnMode").classList.remove("active");
+      document.getElementById("learnControls").style.display = "none";
+      document.getElementById("testControls").style.display = "flex";
+      applyFilter();
+    });
+
+    // Scurtături tastatură
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        flipCard();
+      } else if (e.code === "ArrowLeft") {
+        e.preventDefault();
+        if (isTestMode) handleTestResult(false);
+        else prevCard();
+      } else if (e.code === "ArrowRight") {
+        e.preventDefault();
+        if (isTestMode) handleTestResult(true);
+        else nextCard();
+      }
+    });
+
+    // Start
+    loadData();
+  </script>
+</body>
+</html>

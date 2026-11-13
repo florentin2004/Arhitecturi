@@ -1,0 +1,254 @@
+{
+  "courses": [
+    {
+      "id": 1,
+      "title": "Curs 1: Domain Name System (DNS)",
+      "cards": [
+        {
+          "id": "c1_1",
+          "q": "Care este rolul principal al sistemului DNS și ce port/protocol utilizează?",
+          "a": "DNS realizează conversia între un NUME de domeniu și o adresă IP. Funcționează în arhitectură client/server peste protocolul UDP, pe portul 53."
+        },
+        {
+          "id": "c1_2",
+          "q": "Care este diferența dintre Forward DNS și Reverse DNS?",
+          "a": "Forward DNS face conversia din nume în adresă IP (ex. mta.ro -> 192.124.249.79), în timp ce Reverse DNS face conversia din IP în nume (ex. 192.124.249.79 -> mta.ro)."
+        },
+        {
+          "id": "c1_3",
+          "q": "Care sunt căile fișierului hosts.txt pe Windows și Linux?",
+          "a": "Pe Windows: Windows\\System32\\Drivers\\etc\\hosts\nPe Linux: /etc/hosts"
+        },
+        {
+          "id": "c1_4",
+          "q": "Care sunt avantajele și dezavantajele utilizării fișierului hosts.txt față de DNS?",
+          "a": "Avantaje: Ușor de configurat, nu necesită infrastructură suplimentară.\nDezavantaje: Nu este scalabil, nu este dinamic, necesită timp pentru actualizare manuală și poate genera conflicte de unicitate."
+        },
+        {
+          "id": "c1_5",
+          "q": "Care sunt principalele categorii de Top Level Domain (TLD)?",
+          "a": "1. gTLD (Generic Top-Level Domains): neafiliate unei țări (.com, .org, .edu, .net).\n2. ccTLD (Country-Code Top-Level Domains): cod de 2 litere asociat unei țări (.ro, .uk, .us).\n3. nTLD (New Top-Level Domains): domenii de nișă (.cars).\n4. lTLD (Legacy Top-Level Domains): în curs de retragere."
+        },
+        {
+          "id": "c1_6",
+          "q": "Care este diferența dintre o cerere DNS recursivă și una iterativă?",
+          "a": "Cererea recursivă: clientul cere rezoluția completă, iar serverul își asumă căutarea până obține rezultatul final.\nCererea iterativă: serverul interogat răspunde imediat cu ce știe sau oferă un referral (pointer către următorul server ierarhic), iar resolver-ul continuă căutarea."
+        },
+        {
+          "id": "c1_7",
+          "q": "Ce reprezintă TTL (Time to Live) în înregistrările DNS și cum se recomandă a fi configurat?",
+          "a": "TTL reprezintă timpul în secunde în care un răspuns DNS este păstrat în cache. Recomandări:\n- Modificări dese: 5 minute.\n- Modificări rare: 4-8-12-24 ore."
+        },
+        {
+          "id": "c1_8",
+          "q": "Ce informații conține secțiunea de Flags (16 biți) dintr-un mesaj DNS?",
+          "a": "QR (0 query / 1 response), OpCode (tipul cererii), AA (Authoritative Answer), TC (Truncated), RD (Recursion Desired), RA (Recursion Available), 3 biți rezervați (000), și rCode (cod eroare: 0 fără erori, 3 nume inexistent, etc.)."
+        },
+        {
+          "id": "c1_9",
+          "q": "Descrieți tipurile de Resource Records (RR): CNAME, MX, SOA și PTR.",
+          "a": "- CNAME: Alias pentru un alt domeniu (Canonical Name).\n- MX: Identifică serverul de e-mail (Mail Exchanger).\n- SOA: Informații autoritare despre zonă (Start of Authority).\n- PTR: Pointer folosit pentru Reverse DNS (IP -> Nume)."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Curs 2: Web Servers",
+      "cards": [
+        {
+          "id": "c2_1",
+          "q": "Ce reprezintă un Web Server din punct de vedere software și hardware?",
+          "a": "Software: aplicație care acceptă solicitări HTTP de la browsere și returnează răspunsuri HTTP (HTML, imagini, video).\nHardware: computer/server care rulează acest software și stochează fișierele site-ului."
+        },
+        {
+          "id": "c2_2",
+          "q": "Care este diferența dintre un Web Server static și unul dinamic?",
+          "a": "Serverul static furnizează conținut nemodificat niciodată (timp de procesare foarte scurt).\nServerul dinamic generează conținut adaptat în funcție de utilizator/context, implicând adesea interogări în baze de date (timp de procesare mai mare)."
+        },
+        {
+          "id": "c2_3",
+          "q": "Care este diferența de performanță dintre Kernel-mode Web Server și User-mode Web Server?",
+          "a": "Kernel-mode (ex. TUX, IIS) rulează rapid folosind direct resursele sistemului și memoria non-paged.\nUser-mode (ex. Apache) este de până la 6 ori mai lent, deoarece trebuie să ceară permisiuni pentru resurse și să copieze date în buffere proprii."
+        },
+        {
+          "id": "c2_4",
+          "q": "Care sunt principalele clase de coduri de status HTTP?",
+          "a": "1xx: Informative\n2xx: Succes (ex. 200 OK)\n3xx: Redirecționare\n4xx: Erori pe partea clientului (ex. 404 Not Found)\n5xx: Erori pe partea serverului (ex. 500 Internal Server Error)"
+        },
+        {
+          "id": "c2_5",
+          "q": "Care sunt principalele arhitecturi de procesare a cererilor HTTP?",
+          "a": "1. Multi-process\n2. Multi-threaded\n3. Hibrid (kombinație între primele două)\n4. SPED (Single-Process-Event-Driven): procesează cererile secvențial pe un singur proces."
+        },
+        {
+          "id": "c2_6",
+          "q": "Ce soluții software și hardware pot fi implementate pentru a rezolva un 'Network Overload' pe un server web?",
+          "a": "Software: Caching client-side, compresie, înlăturare date irelevante.\nHardware: Mărire lățime de bandă, upgrade echipamente, folosire CDN, Load Balancing."
+        },
+        {
+          "id": "c2_7",
+          "q": "Ce soluții software și hardware pot fi implementate pentru a rezolva un 'Memory Overload' sau 'CPU Overload' pe un server web?",
+          "a": "Memory: Reducere/mutare cache, golire variabile (SW); Adăugare RAM, Load Balancing (HW).\nCPU: Optimizare funcții, eliminare bucle redundante, folosire Hash Tables (SW); Procesor mai bun, Load Balancing (HW)."
+        },
+        {
+          "id": "c2_8",
+          "q": "Care este diferența dintre General Headers, Request Headers, Response Headers și Representation Headers în protocolul HTTP?",
+          "a": "- General: Se aplică întregului mesaj.\n- Request: Modifică cererea/adaugă context.\n- Response: Oferă informații suplimentare despre server.\n- Representation: Descriu formatul mesajului inițial (Content-Type, Content-Length)."
+        },
+        {
+          "id": "c2_9",
+          "q": "Enumerați cel puțin 3 tipuri de servere web populare și particularitățile lor.",
+          "a": "1. Apache: User-mode, flexibil, scalabil (mod_php).\n2. Nginx: Event-driven, rezolvă problema C10K, consum redus de memorie.\n3. LiteSpeed: Event-driven, optimizat pentru trafic mare.\n4. Microsoft IIS: Modular, optimizat pentru .NET.\n5. Cloudflare (Pingora): Folosit la scară largă pentru CDN/WAF."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Curs 3: Mail (Protocoale E-mail)",
+      "cards": [
+        {
+          "id": "c3_1",
+          "q": "Care sunt componentele cheie ale unei arhitecturi de e-mail (MUA, MTA, MSA, MDA)?",
+          "a": "- MUA (Mail User Agent): clientul utilizatorului (ex. Outlook, Thunderbird).\n- MTA (Message Transfer Agent): serverul care transportă mailul în rețea.\n- MSA (Mail Submission Agent): preia mailul de la MUA pe portul 587 și face validări/corecții.\n- MDA (Mail Delivery Agent): livrează mailul în căsuța locală a destinatarului."
+        },
+        {
+          "id": "c3_2",
+          "q": "Ce porturi sunt asociate protocolului SMTP și utilizării lor?",
+          "a": "- Portul 25: Comunicații MTA-MTA (de obicei blocat pentru a preveni spam-ul).\n- Portul 465: Conexiuni securizate cu SSL.\n- Portul 587: Conexiuni securizate cu TLS (recomandat pentru MSA/client)."
+        },
+        {
+          "id": "c3_3",
+          "q": "Care sunt principalele comenzi utilizate într-o sesiune SMTP?",
+          "a": "HELO / EHLO (inițiere sesiune),\nMAIL FROM (specifică expeditorul),\nRCPT TO (specifică destinatarul),\nDATA (începe transferul efectiv al conținutului),\nQUIT (închide conexiunea),\nRSET (resetează tranzacția)."
+        },
+        {
+          "id": "c3_4",
+          "q": "Care este diferența fundamentală dintre protocoalele de primire POP3 și IMAP?",
+          "a": "POP3 (Port 110) descarcă mesajele local pe dispozitiv și le șterge de pe server (implicit).\nIMAP (Port 143 / 993) stochează mesajele pe server, permițând sincronizarea perfectă pe multiple dispozitive."
+        },
+        {
+          "id": "c3_5",
+          "q": "Prin ce se diferențiază ESMTP (Extended SMTP) de SMTP-ul clasic?",
+          "a": "ESMTP extinde funcționalitățile permițând atașamente, utilizarea TLS pentru criptare și folosește comanda EHLO în loc de HELO."
+        },
+        {
+          "id": "c3_6",
+          "q": "Ce este un Mail Relay și de ce este util?",
+          "a": "Un Mail Relay este un server intermediar folosit pentru transmisia unui e-mail între servere. Este util pentru separarea traficului (ex. trimitere bulk/marketing separat de comunicația directă), prevenind blocarea serverului principal."
+        },
+        {
+          "id": "c3_7",
+          "q": "Ce este un Mail Gateway / Bridge?",
+          "a": "Este un Relay cu capabilități sporite care facilitează transferul de mail între un sistem NON-SMTP și unul SMTP, realizând conversiile necesare."
+        },
+        {
+          "id": "c3_8",
+          "q": "Care sunt avantajele și dezavantajele utilizării unui server SMTP propriu (local)?",
+          "a": "Avantaje: Fără limită de volum, monitorizare completă, intimitate totală (privacy).\nDezavantaje: Necesită resurse (timp/buget), mentenanță constantă, vulnerabil la lipsa redundanței (power/ISP), securitatea cade strict în sarcina organizației."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Curs 4: Autentificare",
+      "cards": [
+        {
+          "id": "c4_1",
+          "q": "Care sunt cele 5 elemente critice în controlul accesului (Axa Securității)?",
+          "a": "1. Identificare (declararea identității)\n2. Autentificare (verificarea identității)\n3. Autorizare (verificarea drepturilor de acces)\n4. Auditare / Log-uri (înregistrarea activităților)\n5. Accountability / Responsabilitate (tragerea la răspundere)."
+        },
+        {
+          "id": "c4_2",
+          "q": "Care sunt cei 3 factori principali ai autentificării și ce exemple comportă?",
+          "a": "1. Ce știe utilizatorul (Knowledge-based): parole, PIN, fraze secrete.\n2. Ce deține utilizatorul (Token-based): smartcard, USB key, token OTP.\n3. Ce este utilizatorul (Biometrics): amprente, recunoaștere facială, iris, retină."
+        },
+        {
+          "id": "c4_3",
+          "q": "De ce semnătura olografă, vocea sau mirosul nu sunt recomandate ca factori biometrici IT?",
+          "a": "Deoarece au variații mari în timp, pot fi ușor imitate/înregistrate (în cazul vocii) sau sunt extrem de greu de măsurat electronic și influențate de stări emoționale/sănătate."
+        },
+        {
+          "id": "c4_4",
+          "q": "Care sunt diferențele principale dintre protocoalele AAA: TACACS+ și RADIUS?",
+          "a": "TACACS+ (Cisco / TCP 49): oferă separație completă AAA, criptează întregul pachet și asigură autorizare granulară.\nRADIUS (Standard deschis / UDP 1812/1813): criptează doar parola, combină autentificarea cu autorizarea și folosește UDP."
+        },
+        {
+          "id": "c4_5",
+          "q": "Cum funcționează metodele de generare a One-Time Passwords (OTP)?",
+          "a": "- Challenge-Response: Ex. resetare parolă prin link pe e-mail.\n- Synchronised Clocks: Folosește timpul local + secret (Ex. RSA SecurID, Google Authenticator).\n- Hash Chains: Secvențe pre-generate de hash-uri (Ex. S/KEY)."
+        },
+        {
+          "id": "c4_6",
+          "q": "Care este fluxul protocolului de autentificare Kerberos?",
+          "a": "1. Clientul cere un TGT de la AS (Authentication Server).\n2. AS îi trimite TGT-ul criptat.\n3. Clientul trimite TGT-ul către TGS (Ticket Granting Server) pentru a cere un Service Ticket.\n4. TGS validează TGT-ul și emite Service Ticket-ul.\n5. Clientul prezintă Service Ticket-ul serviciului (Serverului) pentru acces."
+        },
+        {
+          "id": "c4_7",
+          "q": "Ce tipuri de 'binding' (autentificare) există în LDAP?",
+          "a": "- Simple Binding: DN-ul și parola sunt trimise în clar (necesită canal criptat separat, ex. TLS).\n- SASL Binding: Cadru de autentificare flexibil ce permite utilizarea oricărui tip de autentificare puternică (Kerberos, etc.)."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Curs 5: Network Security – Proxy, Firewall & ACL",
+      "cards": [
+        {
+          "id": "c5_1",
+          "q": "Care este diferența dintre un Forward Proxy și un Reverse Proxy?",
+          "a": "Forward Proxy este poziționat în fața clienților interni pentru a le masca IP-ul și a filtra ieșirile spre Internet.\nReverse Proxy este poziționat în fața serverelor pentru a prelua cererile clienților, a face load balancing și a proteja serverele web."
+        },
+        {
+          "id": "c5_2",
+          "q": "Ce este un Wildcard Mask în configurarea ACL pe routere Cisco?",
+          "a": "Este complementul măștii de subrețea (inversul acesteia): biții de '0' indică potrivire strictă (match), iar biții de '1' indică ignorare (wildcard/don't care)."
+        },
+        {
+          "id": "c5_3",
+          "q": "Unde se recomandă amplasarea ACL-urilor Standard față de cele Extended?",
+          "a": "ACL-urile Standard (care filtrează doar după IP-ul sursă) se plasează cât mai aproape de destinație.\nACL-urile Extended (care filtrează complex după IP, porturi și protocoale) se plasează cât mai aproape de sursă."
+        },
+        {
+          "id": "c5_4",
+          "q": "Care este diferența dintre un Firewall Stateful și un Packet Filtering (Stateless) Firewall?",
+          "a": "Stateless Firewall analizează fiecare pachet izolat pe baza regulilor statice, fără a reține contextul.\nStateful Firewall menține o tabelă de stare (state table) și cunoaște starea sesiunii TCP/UDP, permițând traficul de întoarcere legitim."
+        },
+        {
+          "id": "c5_5",
+          "q": "Care este diferența principală dintre un IDS și un IPS?",
+          "a": "IDS (Intrusion Detection System) monitorizează traficul în mod pasiv (out-of-band) și generează alerte.\nIPS (Intrusion Prevention System) este plasat pe calea de trafic (inline) și blochează activ pachetele malițioase."
+        },
+        {
+          "id": "c5_6",
+          "q": "Care sunt cele 4 tipuri de Proxy clasificate după nivelul de anonimitate?",
+          "a": "1. Transparent: Expune IP-ul real și arată că e proxy.\n2. Anonymous: Ascunde IP-ul, dar arată că e proxy.\n3. High Anonymity (Elite): Ascunde IP-ul și nu arată că e proxy (șterge headerele specifice).\n4. Distorting: Se prezintă ca proxy, dar transmite un IP fals (ex. X-Forwarded-For falsificat)."
+        },
+        {
+          "id": "c5_7",
+          "q": "Ce reprezintă Data Center Proxy, Residential Proxy și Mobile Proxy?",
+          "a": "- Data Center: IP-uri artificiale, ieftine, ușor de blocat.\n- Residential (Static/Rotating): IP-uri de la ISP pentru locații fizice, foarte greu de detectat/blocat.\n- Mobile: IP-uri provenite din rețele 3G/4G/5G."
+        },
+        {
+          "id": "c5_8",
+          "q": "Care sunt cele 3 metode principale de menținere a consistenței în Web Caching?",
+          "a": "- Push: Serverul web notifică activ proxy-ul la modificări.\n- Pull: Proxy-ul interoghează periodic serverul (poll) dacă resursa s-a schimbat.\n- Hybrid (Leases): Se acordă un timp limitat de valabilitate a cache-ului (lease), care poate varia în funcție de vechime sau încărcarea serverului."
+        },
+        {
+          "id": "c5_9",
+          "q": "Care sunt componentele unui Zone-Based Policy Firewall (ZPF)?",
+          "a": "1. Zones: Grupări de interfețe.\n2. Class-map: Definește ce trafic este identificat.\n3. Policy-map: Definește acțiunea (Inspect, Drop, Pass).\n4. Zone-pair: Aplică politica pe sensul de trafic (ex. Sursă: Privat, Destinație: Public)."
+        },
+        {
+          "id": "c5_10",
+          "q": "Care sunt cele 4 arhitecturi de bază pentru implementarea unui VPN?",
+          "a": "1. Gateway-to-Gateway (Site-to-Site).\n2. Remote Access (Host-to-Gateway).\n3. Host-to-Host (direct între două sisteme).\n4. Mesh (Software Defined Networks, trafic direct gestionat de controllere)."
+        },
+        {
+          "id": "c5_11",
+          "q": "Din ce componente este format protocolul IPSec?",
+          "a": "1. IKE (Internet Key Exchange): Pentru negocierea parametrilor și schimbul de chei (IKE SA).\n2. ESP (Encapsulating Security Payload): Asigură criptarea (confidențialitatea) și integritatea datelor (mod Tunel și Transport).\n3. AH (Authentication Header): Asigură doar integritatea și autentificarea (nu criptează datele)."
+        }
+      ]
+    }
+  ]
+}
